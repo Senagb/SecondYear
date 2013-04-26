@@ -1,0 +1,65 @@
+package heap;
+
+import java.io.IOException;
+
+import chainexception.ChainException;
+import global.PageId;
+import global.RID;
+import global.SystemDefs;
+
+public class Scan {
+	HFPage header;
+
+	public Scan(Heapfile hf) throws ChainException, IOException {
+		header = hf.getHeader();
+		SystemDefs.JavabaseBM.pinPage(header.getCurPage(), header, false);
+
+	}
+
+	public Tuple getNext(RID rid) throws IOException, ChainException {
+		Tuple tup = null;
+		PageId index=header.getCurPage();
+			HFPage temp = new HFPage();
+			// search freePage
+			 index = header.getPrevPage();
+			while ( index.pid != -1) {
+				SystemDefs.JavabaseBM.pinPage(index, temp, false);
+				SystemDefs.JavabaseBM.unpinPage(index, true);
+				if(index.pid == rid.pageNo.pid)
+					break;
+				index = temp.getNextPage();
+			}
+			if (index.pid == -1) {
+				// search fullPage
+				index = header.getNextPage();
+				while (index.pid != rid.pageNo.pid && index.pid != -1) {
+					SystemDefs.JavabaseBM.pinPage(index, temp, false);
+					SystemDefs.JavabaseBM.unpinPage(index, true);
+					index = temp.getNextPage();
+				}
+				if (index.pid != -1)
+						tup = temp.getRecord(rid);
+			} else
+				tup = temp.returnRecord(rid);
+		
+		return tup;
+	}
+
+	public boolean position(RID rid) throws ChainException, IOException {
+		HFPage temp = new HFPage();
+		SystemDefs.JavabaseBM.pinPage(rid.pageNo, temp, false);
+		SystemDefs.JavabaseBM.unpinPage(rid.pageNo, true);
+		try {
+			Tuple tuple = temp.returnRecord(rid);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+
+	}
+
+	public void closescan() {
+		header = null;
+	}
+
+}

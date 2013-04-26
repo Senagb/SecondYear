@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 26
+/svn/!svn/ver/28/src/tests
+END
+HFTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/28/src/tests/HFTest.java
+END
+TestDriver.java
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/22/src/tests/TestDriver.java
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/2/src/tests/Makefile
+END
